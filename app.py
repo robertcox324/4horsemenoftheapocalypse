@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import pymongo
 from pymongo import MongoClient
 import json
-import bson
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for
 import os
