@@ -39,13 +39,7 @@ function makeGraphs(error, projectsJson) {
 //        }
 //      return newObject;
 //    }
-	
-	
-//	var pieTypeDim = ndx.dimension(function(d) { return d.AUTHORIZED_CAPITAL; });
-//	var pieDim = ndx.dimension(function(d) { return d.COMPANY_CLASS; });
-//	var rowLevelDim = ndx.dimension(function(d) { return d.PRINCIPAL_BUSINESS_ACTIVITY; });
-//	var bubbleDim = ndx.dimension(function(d) { return d.COMPANY_STATUS; });
-//	var DataDim = ndx.dimension(function(d) { return d.COMPANY_NAME; });
+
     var country_dim = ndx.dimension(function(d) { return d.Country;});
     var yearsCode_dim = ndx.dimension(function(d) { return d.YearsCode;});
     var hobby_dim = ndx.dimension(function(d) { return d.Hobbyist;});
@@ -57,10 +51,15 @@ function makeGraphs(error, projectsJson) {
     var age_dim = ndx.dimension(function(d) {return d.Age;});
     var gender_dim = ndx.dimension(function(d) {return d.Gender;});
 
+//    country_dim.forEach((country)=>{
+//        console.log(country)});
     console.log(country_dim);
 
-	var GroupByCountry = country_dim.group()
-	    .reduceSum(function (d) {return d.Country;})
+//	var GroupByCountry = country_dim.group()
+//	    .reduceCount(function (d) {return d.Country;}).top(10);
+
+	var GroupByJobSat = jobSat_dim.group()
+	    .reduceCount(function (d) {return d.JobSat;});
 //	var numProjectsByResourceType = pieTypeDim.group()
 //	.reduceCount(function(d){return d.AUTHORIZED_CAPITAL;});
 //	var pieDimType = pieDim.group()
@@ -121,9 +120,9 @@ function makeGraphs(error, projectsJson) {
 	row1Chart
         .width(600)
         .height(600)
-		.dimension(country_dim)
-        .group(GroupByCountry)
-		.xAxis().tickFormat(50);
+		.dimension(jobSat_dim)
+        .group(GroupByJobSat);
+//		.xAxis().tickFormat(1500);
         	
 
 	
