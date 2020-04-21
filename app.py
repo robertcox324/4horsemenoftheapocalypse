@@ -12,7 +12,7 @@ MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 DATABASE_NAME = 'stack_overflow'
 COLLECTION_NAME = 'developers_cleaned'
-FIELDS = {'MainBranch': True, 'Hobbyist': True, 'Employment': True, 'Country': True, 'EdLevel': True, 'YearsCode': True, 'ConvertedComp': True, 'JobSat': True, 'JobSeek': True, 'LanguageWorkedWith': True, 'DatabaseWorkedWith': True, 'WebFrameWorkedWith': True, 'SOVisitFreq': True, 'Age': True, 'Gender': True, "_id": False}
+FIELDS = {'MainBranch': True, 'Hobbyist': True, 'Employment': True, 'DevType': True, 'Country': True, 'EdLevel': True, 'YearsCode': True, 'ConvertedComp': True, 'JobSat': True, 'JobSeek': True, 'LanguageWorkedWith': True, 'DatabaseWorkedWith': True, 'WebFrameWorkedWith': True, 'SOVisitFreq': True, 'Age': True, 'Gender': True, "_id": False}
 
 
 # app.config['MONGO_URI'] = "mongodb://localhost:27017/stack_overflow"
@@ -28,7 +28,7 @@ def build_project():
     try:
         connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
         collection = connection[DATABASE_NAME][COLLECTION_NAME]
-        projects = collection.find(projection=FIELDS)
+        projects = collection.find(projection=FIELDS, limit=10000)
         # developers = mongo.db.developers
         # results = developers.find({})
         json_projects = []
