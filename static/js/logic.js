@@ -157,6 +157,7 @@ function makeGraphs(error, projectsJson) {
 		.dimension(language_dim)
         .group(GroupByLanguage)
         .ordering(function(d){ return -d.value })
+        .elasticX(true);
 ////		.xAxis().tickFormat(1500);
 
     row2Chart
@@ -165,6 +166,7 @@ function makeGraphs(error, projectsJson) {
 		.dimension(compensation_dim)
         .group(GroupByComp)
         .ordering(function(d){ return -d.value })
+        .elasticX(true);
         	
 
 	
