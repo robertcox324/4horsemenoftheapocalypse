@@ -143,12 +143,12 @@ function makeGraphs(error, projectsJson) {
 	var boxplotChart = new dc.boxPlot("#boxplot-chart");
 //	var bubbleChart = dc.rowChart("#bubble-chart");
 //	var dataTable = dc.dataTable("#data-chart");
-console.log(JobSatGroup)
-console.log(GroupByDev);
+//console.log(JobSatGroup)
+//console.log(GroupByDev);
 
 //Charts
 	sunburstChart
-        .width(600)
+        .width(1000)
         .height(600)
 		.dimension(dev_dim)
         .group(GroupByDev)
@@ -159,7 +159,7 @@ console.log(GroupByDev);
 
 	var number_of_bins = 10
 	row1Chart
-        .width(600)
+        .width(1000)
         .height(600)
 		.dimension(language_dim)
         .group(GroupByLanguage)
@@ -168,7 +168,7 @@ console.log(GroupByDev);
         .elasticX(true);
 
     row2Chart
-        .width(600)
+        .width(1000)
         .height(600)
 		.dimension(compensation_dim)
         .group(GroupByComp)
@@ -176,19 +176,31 @@ console.log(GroupByDev);
         .elasticX(true);
 
      boxplotChart
-        .width(600)
+        .width(1000)
+        .boxWidth(10)
         .height(600)
+        .margins({top: 10, right: 10, bottom: 50, left: 60})
         .dimension(jobSat_dim)
         .group(JobSatGroup)
-        .tickFormat(d3.format('.1f'))
+//        .tickFormat(d3.format('.1f'))
         .renderDataPoints(true)
         .renderTitle(true)
         .dataWidthPortion(0.5)
         .boldOutlier(true)
         .yAxisLabel("Compensation")
         .xAxisLabel("Satisfied with Job", 0)
-        .elasticY(true);
+        .elasticY(true)
+        .renderHorizontalGridLines(true)
+        .on('renderlet',function(chart){
+            chart.selectAll("g.x text")
+            .attr('dx', '-10')
+            .attr('transform', "rotate(-0)");
+        })
+        .controlsUseVisibility(true)
 
-	
+//	boxplotChart.renderlet(function(chart){
+//        chart.selectAll("g.x text")
+//            .attr('transform', "rotate(-65)");
+//    });
     dc.renderAll();
 }
