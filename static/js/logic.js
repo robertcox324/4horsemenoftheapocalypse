@@ -17,6 +17,7 @@ function makeGraphs(error, projectsJson) {
         v.LanguageWorkedWith.forEach (function(val, idx) {
         p[val] = (p[val] || 0) - 1; //decrement counts
       });
+//      console.log(p);
       return p;
     }
 
@@ -40,7 +41,7 @@ function makeGraphs(error, projectsJson) {
 
     var language_dim = ndx.dimension(function(d){ return d.LanguageWorkedWith;});
     var GroupByLanguage = language_dim.groupAll().reduce(lan_reduceAdd, lan_reduceRemove, reduceInitial).value();
-    // hack to make dc.js charts work
+//     hack to make dc.js charts work
     GroupByLanguage.all = function() {
         var newObject = [];
         for (var key in this) {
@@ -51,13 +52,12 @@ function makeGraphs(error, projectsJson) {
                 });
             }
         }
-        console.log(newObject);
       return newObject;
     }
 
-    var dev_dim = ndx.dimension(function(d){ return d.DevType;});
+    var dev_dim = ndx.dimension(function(d) { return d.DevType});
     var GroupByDev = dev_dim.groupAll().reduce(dev_reduceAdd, dev_reduceRemove, reduceInitial).value();
-    // hack to make dc.js charts work
+//     hack to make dc.js charts work
     GroupByDev.all = function() {
         var newObject = [];
         for (var key in this) {
@@ -68,9 +68,10 @@ function makeGraphs(error, projectsJson) {
                 });
             }
         }
-        console.log(newObject);
+//        console.log(newObject);
       return newObject;
     }
+
 
     var country_dim = ndx.dimension(function(d) { return d.Country;}, true);
     var yearsCode_dim = ndx.dimension(function(d) { return d.YearsCode;}, true);
@@ -92,73 +93,79 @@ function makeGraphs(error, projectsJson) {
     var gender_dim = ndx.dimension(function(d) {return d.Gender;}, true);
 
 
-    console.log(country_dim);
-
-
-
-	var GroupByJobSat = jobSat_dim.group()
+    var GroupByJobSat = jobSat_dim.group()
 	    .reduceCount(function (d) {return d.JobSat;});
 	var GroupByComp = compensation_dim.group()
 	    .reduceCount(function (d) {return d.ConvertedComp;});
+//    var GroupByCountry = country_dim.group()
+//	    .reduceSum(function (d) {return d.Country;});
+
+	let JobSatGroup = jobSat_dim.group().reduce(
+        function (p, v) {
+            // Retrieve the data value, if not Infinity or null add it.
+            let dv = v.ConvertedComp;
+            if (dv != Infinity && dv != null) p.splice(d3.bisectLeft(p, dv), 0, dv);
+                return p;
+        },
+        function (p, v) {
+            // Retrieve the data value, if not Infinity or null remove it.
+            let dv = v.ConvertedComp;
+            if (dv != Infinity && dv != null) p.splice(d3.bisectLeft(p, dv), 1);
+            return p;
+        },
+            function () {
+                return [];
+            }
+    );
+
+    var select = new dc.selectMenu("#select1")
+        .dimension(country_dim)
+        .group(country_dim.group())
+        .controlsUseVisibility(true)
+        .title(d=>d.key);
 
 
+
+//	var GroupByDev = dev_dim.group()
+//        .reduceCount(function (d) {return d.DevType.split(";");});
+//    var GroupByLanguage = language_dim.group()
+//        .reduceCount(function (d) {return d.LanguageWorkedWith.split(";");})
+//    console.log(GroupByLanguage);
 	
 	
 //	var DataDimgroup = DataDim.group()
 //	.reduceCount(function(d){return d.COMPANY_STATUS;});
     
-	var rowChart = dc.pieChart("#pie-chart");
-	var row1Chart = dc.rowChart("#row-chart");
-	var row2Chart = dc.rowChart("#row2-chart");
+//	var rowChart = dc.pieChart("#pie-chart");
+    var sunburstChart = new dc.sunburstChart("#pie-chart");
+	var row1Chart = new dc.rowChart("#row-chart");
+	var row2Chart = new dc.rowChart("#row2-chart");
+	var boxplotChart = new dc.boxPlot("#boxplot-chart");
 //	var bubbleChart = dc.rowChart("#bubble-chart");
 //	var dataTable = dc.dataTable("#data-chart");
+console.log(JobSatGroup)
+console.log(GroupByDev);
 
-	rowChart
-        .width(400)
-        .height(400)
+//Charts
+	sunburstChart
+        .width(600)
+        .height(600)
 		.dimension(dev_dim)
         .group(GroupByDev)
-		.radius(200)
+		.radius(350)
 //		.slicesCap(5)
     .legend(dc.legend());
        
-		
-//	dataTable
-//	.width(960)
-//	.height(800)
-//
-//    .dimension(DataDim)
-//    .group(function(d) { return d.COMPANY_NAME;
-//     })
-//
-//    .columns([
-//     function(d) { return d.COMPANY_STATUS; },
-//     function(d) { return d.COMPANY_CLASS; },
-//
-//	  function(d) { return d.PAIDUP_CAPITAL; },
-//      function(d) { return d.AUTHORIZED_CAPITAL; },
-//
-//      function(d) { return d.PRINCIPAL_BUSINESS_ACTIVITY; },
-//    ])
-//    .sortBy(function(d){ return d.PRINCIPAL_BUSINESS_ACTIVITY; })
-//    .order(d3.ascending);
-//
-//
-//	bubbleChart
-//         .width(700)
-//        .height(150)
-//		.dimension(pieDim)
-//        .group(pieDimType)
-//		.xAxis().tickFormat();
-		
+
+	var number_of_bins = 10
 	row1Chart
         .width(600)
         .height(600)
 		.dimension(language_dim)
         .group(GroupByLanguage)
         .ordering(function(d){ return -d.value })
+        .rowsCap(10)
         .elasticX(true);
-////		.xAxis().tickFormat(1500);
 
     row2Chart
         .width(600)
@@ -167,7 +174,20 @@ function makeGraphs(error, projectsJson) {
         .group(GroupByComp)
         .ordering(function(d){ return -d.value })
         .elasticX(true);
-        	
+
+     boxplotChart
+        .width(600)
+        .height(600)
+        .dimension(jobSat_dim)
+        .group(JobSatGroup)
+        .tickFormat(d3.format('.1f'))
+        .renderDataPoints(true)
+        .renderTitle(true)
+        .dataWidthPortion(0.5)
+        .boldOutlier(true)
+        .yAxisLabel("Compensation")
+        .xAxisLabel("Satisfied with Job", 0)
+        .elasticY(true);
 
 	
     dc.renderAll();

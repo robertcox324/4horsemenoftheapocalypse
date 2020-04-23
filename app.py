@@ -29,16 +29,12 @@ def build_project():
         connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
         collection = connection[DATABASE_NAME][COLLECTION_NAME]
         projects = collection.find(projection=FIELDS)
-        # developers = mongo.db.developers
-        # results = developers.find({})
         json_projects = []
         for project in projects:
             json_projects.append(project)
         json_projects = json.dumps(json_projects, default=json_util.default)
         connection.close()
         return json_projects
-        # return render_template("index.html", results = results)
-        # return jsonify({"results": result['LanguageWorkedWith']})
     except Exception as e:
         return dumps({"error": str(e)})
 
