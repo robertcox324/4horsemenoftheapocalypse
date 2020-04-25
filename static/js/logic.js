@@ -1,5 +1,5 @@
 queue()
-    .defer(d3.json, '/stack_overflow/developers_test')
+    .defer(d3.json, '/stack_overflow/developers_cleaned')
     .await(makeGraphs);
 
 function makeGraphs(error, projectsJson) {

@@ -11,7 +11,7 @@ app = Flask(__name__)
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 DATABASE_NAME = 'stack_overflow'
-COLLECTION_NAME = 'developers_test'
+COLLECTION_NAME = 'developers_cleaned'
 FIELDS = {'MainBranch': True, 'Hobbyist': True, 'Employment': True, 'DevType': True, 'Country': True, 'EdLevel': True, 'YearsCode': True, 'ConvertedComp': True, 'JobSat': True, 'JobSeek': True, 'LanguageWorkedWith': True, 'DatabaseWorkedWith': True, 'WebFrameWorkedWith': True, 'SOVisitFreq': True, 'Age': True, 'Gender': True, "_id": False}
 
 
@@ -23,7 +23,7 @@ FIELDS = {'MainBranch': True, 'Hobbyist': True, 'Employment': True, 'DevType': T
 def index():
     return render_template("index.html")
 
-@app.route("/stack_overflow/developers_test")
+@app.route("/stack_overflow/developers_cleaned")
 def build_project():
     try:
         connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
