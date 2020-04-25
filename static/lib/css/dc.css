@@ -32,6 +32,17 @@ div.dc-chart {
     cursor: pointer;
 }
 
+.dc-chart .pie-path {
+  fill:none;
+  stroke-width: 2px;
+  stroke: black;
+  opacity: 0.4;
+}
+
+.dc-chart .pie-slice.external{
+    fill: black;
+}
+
 .dc-chart .pie-slice :hover {
     fill-opacity: .8;
 }
@@ -203,7 +214,7 @@ div.dc-chart {
 }
 
 .dc-legend {
-    font-size: 11px;
+    font-size: 15px;
 }
 
 .dc-legend-item {

@@ -1,5 +1,5 @@
 queue()
-    .defer(d3.json, '/stack_overflow/developers_cleaned')
+    .defer(d3.json, '/stack_overflow/developers_test')
     .await(makeGraphs);
 
 function makeGraphs(error, projectsJson) {
@@ -7,14 +7,14 @@ function makeGraphs(error, projectsJson) {
 	var ndx = crossfilter(stack_overflow_repo);
 
     function lan_reduceAdd(p, v) {
-        v.LanguageWorkedWith.forEach (function(val, idx) {
+        v.LanguageWorkedWith.split(";").forEach (function(val, idx) {
         p[val] = (p[val] || 0) + 1; //increment counts
       });
       return p;
     }
 
     function lan_reduceRemove(p, v) {
-        v.LanguageWorkedWith.forEach (function(val, idx) {
+        v.LanguageWorkedWith.split(";").forEach (function(val, idx) {
         p[val] = (p[val] || 0) - 1; //decrement counts
       });
 //      console.log(p);
@@ -22,14 +22,16 @@ function makeGraphs(error, projectsJson) {
     }
 
     function dev_reduceAdd(p, v) {
-        v.DevType.forEach (function(val, idx) {
+        console.log(v.DevType.split(";"));
+        v.DevType.split(";").forEach (function(val, idx) {
         p[val] = (p[val] || 0) + 1; //increment counts
       });
+//      console.log(p);
       return p;
     }
 
     function dev_reduceRemove(p, v) {
-        v.DevType.forEach (function(val, idx) {
+        v.DevType.split(";").forEach (function(val, idx) {
         p[val] = (p[val] || 0) - 1; //decrement counts
       });
       return p;
@@ -39,10 +41,12 @@ function makeGraphs(error, projectsJson) {
         return {};
     }
 
-    var language_dim = ndx.dimension(function(d){ return d.LanguageWorkedWith;});
-    var GroupByLanguage = language_dim.groupAll().reduce(lan_reduceAdd, lan_reduceRemove, reduceInitial).value();
+
+
+    var dev_dim = ndx.dimension(function(d) {return d.DevType.split(";");});
+    var GroupByDev = dev_dim.groupAll().reduce(dev_reduceAdd, dev_reduceRemove, reduceInitial).value();
 //     hack to make dc.js charts work
-    GroupByLanguage.all = function() {
+    GroupByDev.all = function() {
         var newObject = [];
         for (var key in this) {
             if (this.hasOwnProperty(key) && key != "all") {
@@ -55,10 +59,10 @@ function makeGraphs(error, projectsJson) {
       return newObject;
     }
 
-    var dev_dim = ndx.dimension(function(d) { return d.DevType});
-    var GroupByDev = dev_dim.groupAll().reduce(dev_reduceAdd, dev_reduceRemove, reduceInitial).value();
+     var language_dim = ndx.dimension(function(d){ return d.LanguageWorkedWith.split(";");});
+    var GroupByLanguage = language_dim.groupAll().reduce(lan_reduceAdd, lan_reduceRemove, reduceInitial).value();
 //     hack to make dc.js charts work
-    GroupByDev.all = function() {
+    GroupByLanguage.all = function() {
         var newObject = [];
         for (var key in this) {
             if (this.hasOwnProperty(key) && key != "all") {
@@ -136,8 +140,8 @@ function makeGraphs(error, projectsJson) {
 //	var DataDimgroup = DataDim.group()
 //	.reduceCount(function(d){return d.COMPANY_STATUS;});
     
-//	var rowChart = dc.pieChart("#pie-chart");
-    var sunburstChart = new dc.sunburstChart("#pie-chart");
+	var pieChart = dc.pieChart("#pie-chart");
+//    var sunburstChart = new dc.sunburstChart("#pie-chart");
 	var row1Chart = new dc.rowChart("#row-chart");
 	var row2Chart = new dc.rowChart("#row2-chart");
 	var boxplotChart = new dc.boxPlot("#boxplot-chart");
@@ -147,15 +151,35 @@ function makeGraphs(error, projectsJson) {
 //console.log(GroupByDev);
 
 //Charts
-	sunburstChart
-        .width(1000)
-        .height(600)
-		.dimension(dev_dim)
-        .group(GroupByDev)
-		.radius(350)
-//		.slicesCap(5)
-    .legend(dc.legend());
-       
+var heightOfContainer = 500,
+    legendHeight = 100,
+    legendY = heightOfContainer - legendHeight;
+    pieChart
+          .width(1200)
+          .height(600)
+          .slicesCap(15)
+          .innerRadius(120)
+          .externalLabels(50)
+          .minAngleForLabel(0)
+          .externalRadiusPadding(120)
+          .drawPaths(true)
+          .dimension(dev_dim)
+          .group(GroupByDev)
+          .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
+//          .legend(dc.legend().x(700).y(legendY))
+
+      // example of formatting the legend via svg
+       http://stackoverflow.com/questions/38430632/how-can-we-add-legends-value-beside-of-legend-with-proper-alignment
+      pieChart.on('pretransition', function(chart) {
+          chart.selectAll('.dc-legend-item text')
+              .text('')
+            .append('tspan')
+              .text(function(d) { return d.name; })
+            .append('tspan')
+              .attr('x', 400)
+              .attr('text-anchor', 'end')
+              .text(function(d) { return d.data; });
+      });
 
 	var number_of_bins = 10
 	row1Chart
@@ -164,7 +188,7 @@ function makeGraphs(error, projectsJson) {
 		.dimension(language_dim)
         .group(GroupByLanguage)
         .ordering(function(d){ return -d.value })
-        .rowsCap(10)
+        .rowsCap(number_of_bins)
         .elasticX(true);
 
     row2Chart
