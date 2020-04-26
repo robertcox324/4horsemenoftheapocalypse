@@ -130,6 +130,7 @@ function makeGraphs(error, projectsJson) {
 
 
 
+
 //	var GroupByDev = dev_dim.group()
 //        .reduceCount(function (d) {return d.DevType.split(";");});
 //    var GroupByLanguage = language_dim.group()
@@ -145,28 +146,27 @@ function makeGraphs(error, projectsJson) {
 	var row1Chart = new dc.rowChart("#row-chart");
 	var row2Chart = new dc.rowChart("#row2-chart");
 	var boxplotChart = new dc.boxPlot("#boxplot-chart");
-//	var bubbleChart = dc.rowChart("#bubble-chart");
-//	var dataTable = dc.dataTable("#data-chart");
-//console.log(JobSatGroup)
-//console.log(GroupByDev);
+
 
 //Charts
 var heightOfContainer = 500,
     legendHeight = 100,
     legendY = heightOfContainer - legendHeight;
+    var adjustX = 20, adjustY = 40;
     pieChart
-          .width(1200)
-          .height(600)
+          .width(window.innerWidth-adjustX)
+          .height(window.innerHeight-adjustY)
           .slicesCap(15)
           .innerRadius(120)
-          .externalLabels(50)
+          .externalLabels(70)
           .minAngleForLabel(0)
-          .externalRadiusPadding(120)
+          .externalRadiusPadding(100)
           .drawPaths(true)
           .dimension(dev_dim)
           .group(GroupByDev)
-          .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
+//          .legend(dc.legend().x(900).y(10).itemHeight(13).gap(5).autoItemWidth(true))
 //          .legend(dc.legend().x(700).y(legendY))
+    apply_resizing(pieChart, adjustX, adjustY);
 
       // example of formatting the legend via svg
        http://stackoverflow.com/questions/38430632/how-can-we-add-legends-value-beside-of-legend-with-proper-alignment
@@ -176,7 +176,7 @@ var heightOfContainer = 500,
             .append('tspan')
               .text(function(d) { return d.name; })
             .append('tspan')
-              .attr('x', 400)
+              .attr('x', 300)
               .attr('text-anchor', 'end')
               .text(function(d) { return d.data; });
       });
@@ -189,7 +189,9 @@ var heightOfContainer = 500,
         .group(GroupByLanguage)
         .ordering(function(d){ return -d.value })
         .rowsCap(number_of_bins)
-        .elasticX(true);
+        .elasticX(true)
+//    apply_resizing_languageBar(row1Chart, adjustX, adjustY);
+
 
     row2Chart
         .width(1000)
@@ -198,6 +200,8 @@ var heightOfContainer = 500,
         .group(GroupByComp)
         .ordering(function(d){ return -d.value })
         .elasticX(true);
+    apply_resizing_salaryBar(row2Chart, adjustX, adjustY);
+
 
      boxplotChart
         .width(1000)
@@ -206,7 +210,7 @@ var heightOfContainer = 500,
         .margins({top: 10, right: 10, bottom: 50, left: 60})
         .dimension(jobSat_dim)
         .group(JobSatGroup)
-//        .tickFormat(d3.format('.1f'))
+        .tickFormat(d3.format('.1f'))
         .renderDataPoints(true)
         .renderTitle(true)
         .dataWidthPortion(0.5)
@@ -214,17 +218,28 @@ var heightOfContainer = 500,
         .yAxisLabel("Compensation")
         .xAxisLabel("Satisfied with Job", 0)
         .elasticY(true)
+        .yAxisPadding('10%')
         .renderHorizontalGridLines(true)
         .on('renderlet',function(chart){
             chart.selectAll("g.x text")
-            .attr('dx', '-10')
+            .attr('dx', '0')
             .attr('transform', "rotate(-0)");
         })
         .controlsUseVisibility(true)
 
-//	boxplotChart.renderlet(function(chart){
-//        chart.selectAll("g.x text")
-//            .attr('transform', "rotate(-65)");
-//    });
+
+//  row1Chart.on("postRender", function(chart) {
+//        addXLabel(chart, "# of Developers");
+//        addYLabel(chart, "Top 10 Languages");
+//  });
+//    row2Chart.on("postRender", function(chart) {
+//        addXLabel(chart, "# of Developers in each range");
+//        addYLabel(chart, "Range of Salaries");
+//  });
+
+
     dc.renderAll();
+
+
+
 }

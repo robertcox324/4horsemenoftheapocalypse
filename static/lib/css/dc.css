@@ -197,7 +197,13 @@ div.dc-chart {
     fill: blue;
     fill-opacity: .2;
 }
+.dc-chart {
+    margin-right:10px;
+    margin-bottom:10px;
+    padding-bottom: 20px;
+    padding-right: 50px;
 
+}
 .dc-chart g.row rect {
     fill-opacity: 0.8;
     cursor: pointer;
@@ -214,7 +220,7 @@ div.dc-chart {
 }
 
 .dc-legend {
-    font-size: 15px;
+    font-size: 12px;
 }
 
 .dc-legend-item {
@@ -255,3 +261,4 @@ div.dc-chart {
 .dc-hard .number-display {
     float: none;
 }
+
