@@ -198,11 +198,11 @@ div.dc-chart {
     fill-opacity: .2;
 }
 .dc-chart {
-    margin-right:10px;
+   /* margin-right:10px;
     margin-bottom:10px;
     padding-bottom: 20px;
     padding-right: 50px;
-
+*/
 }
 .dc-chart g.row rect {
     fill-opacity: 0.8;
@@ -261,4 +261,5 @@ div.dc-chart {
 .dc-hard .number-display {
     float: none;
 }
+
 

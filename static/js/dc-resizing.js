@@ -47,15 +47,15 @@ function apply_resizing(chart, adjustX, adjustY, onresize) {
         adjustX = adjustX || 0;
         adjustY = adjustY || adjustX || 0;
         chart
-            .width(window.innerWidth - innerWidth/2)
-            .height(window.innerHeight - innerHeight/2);
+            .width(window.innerWidth - window.innerWidth/2)
+//            .height(window.innerHeight - window.innerHeight/2 - adjustY);
         window.onresize = function () {
             if (onresize) {
                 onresize(chart);
             }
             chart
                 .width(window.innerWidth - window.innerWidth/2)
-                .height(window.innerHeight - window.innerHeight/2)
+//                .height(window.innerHeight - window.innerHeight/2 - adjustY);
 //                .x((dc.chart.x(window.innerWidth - window.innerWidth/2-windows.innerWidth/4)))
 //                .y(dc.chart.y(window.innerHeight - window.innerHeight/2))
 
@@ -68,27 +68,27 @@ function apply_resizing(chart, adjustX, adjustY, onresize) {
         };
     }
 }
-
+//
 function apply_resizing_languageBar(chart, adjustX, adjustY, onresize) {
     if (resizeMode.toLowerCase() === 'viewbox') {
         chart
-            .width(600)
-            .height(400)
+            .width(1000)
+            .height(600)
             .useViewBoxResizing(true);
         d3.select(chart.anchor()).classed('fullsize', true);
     } else {
         adjustX = adjustX || 0;
         adjustY = adjustY || adjustX || 0;
         chart
-            .width(window.innerWidth - innerWidth/2)
-            .height(window.innerHeight - innerHeight/2);
+            .width(window.innerWidth + window.innerWidth/2- adjustX)
+//            .height(window.innerHeight - innerHeight/2);
         window.onresize = function () {
             if (onresize) {
                 onresize(chart);
             }
             chart
-                .width(window.innerWidth - window.innerWidth/2)
-                .height(window.innerHeight - window.innerHeight/2)
+                .width(window.innerWidth + window.innerWidth/2- adjustX)
+//                .height(window.innerHeight - window.innerHeight/2)
 
 //            chart.legend(dc.legend().x(window.innerWidth-window.innerWidth/2))
 
