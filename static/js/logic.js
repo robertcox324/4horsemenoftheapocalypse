@@ -29,7 +29,7 @@ function makeGraphs(error, projectsJson) {
     }
 
     function dev_reduceAdd(p, v) {
-        console.log(v.DevType.split(";"));
+//        console.log(v.DevType.split(";"));
         v.DevType.split(";").forEach (function(val, idx) {
         p[val] = (p[val] || 0) + 1; //increment counts
       });
@@ -175,7 +175,7 @@ var heightOfContainer = 500,
           .group(GroupByDev)
 //          .legend(dc.legend().x(900).y(10).itemHeight(13).gap(5).autoItemWidth(true))
 //          .legend(dc.legend().x(700).y(legendY))
-    apply_resizing(pieChart, adjustX, adjustY);
+//    apply_resizing(pieChart, adjustX, adjustY);
 
       // example of formatting the legend via svg. This is not used since it behaves funky when the chart is resized
        http://stackoverflow.com/questions/38430632/how-can-we-add-legends-value-beside-of-legend-with-proper-alignment
@@ -201,7 +201,6 @@ var heightOfContainer = 500,
         .ordering(function(d){ return -d.value })
         .rowsCap(number_of_bins)
         .elasticX(true)
-//    apply_resizing_languageBar(languageChart, adjustX, adjustY);
 
 
     salaryChart
@@ -238,6 +237,7 @@ var heightOfContainer = 500,
         })
         .controlsUseVisibility(true)
 
+        apply_resizing(pieChart, languageChart, salaryChart, boxplotChart, adjustX, adjustY);
 
 //  row1Chart.on("postRender", function(chart) {
 //        addXLabel(chart, "# of Developers");
