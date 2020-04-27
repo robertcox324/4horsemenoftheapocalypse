@@ -19,7 +19,7 @@
 //
 //Code navigation is available!
 //Navigate your code with ease. Click on function and method calls to jump to their definitions or references in the same repository. Learn more
-
+// 4horsemenenOfTheApocalypse added some functionality to the original code to make all charts responsive
 var find_query = function () {
     var _map = window.location.search.substr(1).split('&').map(function (a) {
         return a.split('=');
@@ -36,24 +36,57 @@ var find_query = function () {
 }();
 var resizeMode = find_query('resize') || 'widhei';
 
-function apply_resizing(chart, adjustX, adjustY, onresize) {
+function apply_resizing(pieChart, languageChart, salaryChart, boxplotChart, adjustX, adjustY, onresize) {
     if (resizeMode.toLowerCase() === 'viewbox') {
-        chart
+        pieChart
             .width(1000)
             .height(600)
             .useViewBoxResizing(true);
-        d3.select(chart.anchor()).classed('fullsize', true);
+        d3.select(pieChart.anchor()).classed('fullsize', true);
+
+        languageChart
+            .width(1000)
+            .height(600)
+            .useViewBoxResizing(true);
+        d3.select(languageChart.anchor()).classed('fullsize', true);
+
+        salaryChart
+            .width(1000)
+            .height(600)
+            .useViewBoxResizing(true);
+        d3.select(salaryChart.anchor()).classed('fullsize', true);
+
+        boxplotChart
+            .width(1000)
+            .height(600)
+            .useViewBoxResizing(true);
+        d3.select(boxplotChart.anchor()).classed('fullsize', true);
     } else {
         adjustX = adjustX || 0;
         adjustY = adjustY || adjustX || 0;
-        chart
+        pieChart
+            .width(window.innerWidth - window.innerWidth/2)
+        languageChart
+            .width(window.innerWidth - window.innerWidth/2)
+        salaryChart
+            .width(window.innerWidth - window.innerWidth/2)
+        boxplotChart
             .width(window.innerWidth - window.innerWidth/2)
 //            .height(window.innerHeight - window.innerHeight/2 - adjustY);
         window.onresize = function () {
             if (onresize) {
-                onresize(chart);
+                onresize(pieChart);
+                onresize(languageChart);
+                onresize(salaryChart);
+                onresize(boxplotChart);
             }
-            chart
+            pieChart
+                .width(window.innerWidth - window.innerWidth/2)
+            languageChart
+                .width(window.innerWidth - window.innerWidth/2)
+            salaryChart
+                .width(window.innerWidth - window.innerWidth/2)
+            boxplotChart
                 .width(window.innerWidth - window.innerWidth/2)
 //                .height(window.innerHeight - window.innerHeight/2 - adjustY);
 //                .x((dc.chart.x(window.innerWidth - window.innerWidth/2-windows.innerWidth/4)))
@@ -61,75 +94,33 @@ function apply_resizing(chart, adjustX, adjustY, onresize) {
 
 //            chart.legend(dc.legend().x(window.innerWidth-window.innerWidth/2))
 
-            if (chart.rescale) {
-                chart.rescale();
+            if (pieChart.rescale) {
+                pieChart.rescale();
             }
-            chart.redraw();
-        };
-    }
-}
-//
-function apply_resizing_languageBar(chart, adjustX, adjustY, onresize) {
-    if (resizeMode.toLowerCase() === 'viewbox') {
-        chart
-            .width(1000)
-            .height(600)
-            .useViewBoxResizing(true);
-        d3.select(chart.anchor()).classed('fullsize', true);
-    } else {
-        adjustX = adjustX || 0;
-        adjustY = adjustY || adjustX || 0;
-        chart
-            .width(window.innerWidth + window.innerWidth/2- adjustX)
-//            .height(window.innerHeight - innerHeight/2);
-        window.onresize = function () {
-            if (onresize) {
-                onresize(chart);
-            }
-            chart
-                .width(window.innerWidth + window.innerWidth/2- adjustX)
-//                .height(window.innerHeight - window.innerHeight/2)
+            pieChart.redraw();
 
-//            chart.legend(dc.legend().x(window.innerWidth-window.innerWidth/2))
-
-            if (chart.rescale) {
-                chart.rescale();
+            if (languageChart.rescale) {
+                languageChart.rescale();
             }
-            chart.redraw();
+            languageChart.redraw();
+
+            if (salaryChart.rescale) {
+                salaryChart.rescale();
+            }
+            salaryChart.redraw();
+
+            if (boxplotChart.rescale) {
+                boxplotChart.rescale();
+            }
+            boxplotChart.redraw();
+
         };
     }
 }
 
-function apply_resizing_salaryBar(chart, adjustX, adjustY, onresize) {
-    if (resizeMode.toLowerCase() === 'viewbox') {
-        chart
-            .width(600)
-            .height(400)
-            .useViewBoxResizing(true);
-        d3.select(chart.anchor()).classed('fullsize', true);
-    } else {
-        adjustX = adjustX || 0;
-        adjustY = adjustY || adjustX || 0;
-        chart
-            .width(window.innerWidth - innerWidth/2)
-            .height(window.innerHeight - innerHeight/2);
-        window.onresize = function () {
-            if (onresize) {
-                onresize(chart);
-            }
-            chart
-                .width(window.innerWidth - window.innerWidth/2)
-                .height(window.innerHeight - window.innerHeight/2)
 
-//            chart.legend(dc.legend().x(window.innerWidth-window.innerWidth/2))
 
-            if (chart.rescale) {
-                chart.rescale();
-            }
-            chart.redraw();
-        };
-    }
-}
+
 
 
 //© 2020 GitHub, Inc.
