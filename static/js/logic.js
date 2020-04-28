@@ -83,12 +83,10 @@ function makeGraphs(error, projectsJson) {
       return newObject;
     }
 
-// Creating crossfilter dimensions for each column in our DataFrame
+// Creating crossfilter dimensions for  columns of interest in our DataFrame
     var country_dim = ndx.dimension(function(d) { return d.Country;}, true);
-    var yearsCode_dim = ndx.dimension(function(d) { return d.YearsCode;}, true);
-    var hobby_dim = ndx.dimension(function(d) { return d.Hobbyist;}, true);
     var jobSat_dim = ndx.dimension(function(d) { return d.JobSat;}, true);
-    var jobSeek_dim = ndx.dimension(function(d) { return d.JobSeek;}, true);
+
 
 // Creating compensation ranges
     var compensation_dim = ndx.dimension(function(d) {
@@ -99,18 +97,13 @@ function makeGraphs(error, projectsJson) {
         else if (d.ConvertedComp > 20000) return "20K +";
         else return "Very Low";}, true);
 
-    var db_dim = ndx.dimension(function(d) {return d.DatabaseWorkedWith;}, true);
-    var wbFrame_dim = ndx.dimension(function(d) {return d.WebFrameWorkedWith;}, true);
-    var age_dim = ndx.dimension(function(d) {return d.Age;}, true);
-    var gender_dim = ndx.dimension(function(d) {return d.Gender;}, true);
 
-
+//    Grouping values
     var GroupByJobSat = jobSat_dim.group()
 	    .reduceCount(function (d) {return d.JobSat;});
 	var GroupByComp = compensation_dim.group()
 	    .reduceCount(function (d) {return d.ConvertedComp;});
-//    var GroupByCountry = country_dim.group()
-//	    .reduceSum(function (d) {return d.Country;});
+
 
 	let JobSatGroup = jobSat_dim.group().reduce(
         function (p, v) {
@@ -137,18 +130,6 @@ function makeGraphs(error, projectsJson) {
         .controlsUseVisibility(true)
         .title(d=>d.key);
 
-
-
-
-//	var GroupByDev = dev_dim.group()
-//        .reduceCount(function (d) {return d.DevType.split(";");});
-//    var GroupByLanguage = language_dim.group()
-//        .reduceCount(function (d) {return d.LanguageWorkedWith.split(";");})
-//    console.log(GroupByLanguage);
-	
-	
-//	var DataDimgroup = DataDim.group()
-//	.reduceCount(function(d){return d.COMPANY_STATUS;});
 
 //    Chart elemtns created
 	var pieChart = new dc.pieChart("#pie-chart");
@@ -210,7 +191,6 @@ var heightOfContainer = 500,
         .group(GroupByComp)
         .ordering(function(d){ return -d.value })
         .elasticX(true);
-//    apply_resizing_salaryBar(row2Chart, adjustX, adjustY);
 
 
      boxplotChart
@@ -239,11 +219,12 @@ var heightOfContainer = 500,
 
         apply_resizing(pieChart, languageChart, salaryChart, boxplotChart, adjustX, adjustY);
 
-//  row1Chart.on("postRender", function(chart) {
+//Below function adds labels to Row charts but does not work when charts being resized. Unfortunately there is no default labeling functions for Row charts in dc.js
+//  languageChart.on("postRender", function(chart) {
 //        addXLabel(chart, "# of Developers");
 //        addYLabel(chart, "Top 10 Languages");
 //  });
-//    row2Chart.on("postRender", function(chart) {
+//    salaryChart.on("postRender", function(chart) {
 //        addXLabel(chart, "# of Developers in each range");
 //        addYLabel(chart, "Range of Salaries");
 //  });

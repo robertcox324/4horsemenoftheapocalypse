@@ -28,7 +28,7 @@ def build_project():
     try:
         connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
         collection = connection[DATABASE_NAME][COLLECTION_NAME]
-        projects = collection.find(projection=FIELDS, limit=100)
+        projects = collection.find(projection=FIELDS)
         json_projects = []
         for project in projects:
             json_projects.append(project)
