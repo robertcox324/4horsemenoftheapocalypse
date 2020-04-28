@@ -1,37 +1,25 @@
-Our initial plan was to do something topical with COVID-19 - specifically its effect on flights throughout the world. Unfortunately, despite initial success in landing some fairly recent data,
-we couldn't find the historical information that we needed without paying out for it. So, after kicking around a lot of different ideas, we settled on working with data from Stack Overflow's 
-2019 Developer Survey.
+Our initial plan was to do something topical with COVID-19 - specifically its effect on flights throughout the world. Unfortunately, despite initial success in landing some fairly recent data, we couldn't find the historical information that we needed without paying out for it. So, after kicking around a lot of different ideas, we settled on working with data from Stack Overflow's 2019 Developer Survey.
 
-The survey was fairly extensive, so it gave us a lot of data to work with. We chose to focus on the following aspects for the purposes of this project: 
-Country, job title, programming language, adjusted salary, and job satisfaction. There were a lot of other metrics that we could have included, 
-but we felt that this would provide something that was both interesting and more immediately useful. However, it wouldn't take much more work to include other data if it was deemed necessary. 
+The survey was fairly extensive, so it gave us a lot of data to work with. The survey collected information from over 80,000 developers to gain insights into the makeup of the computer science workforce. 
 
-Fortunately, the data were fairly clean and didn't require much wrangling. The survey information was very uniform and was fairly easy to parse out overall. 
-Some data were purged because they weren't useful for our work - primarily the developer records that were left blank or NaN.
+We chose to focus on the following aspects for the purposes of this project: Country, job title, programming language, adjusted salary, and job satisfaction. There were a lot of other metrics that we could have included, but we felt that these were the most appropriate for the project's purpose. Fortunately, the data were fairly clean and didn't require much wrangling. The survey information was very uniform and was fairly easy to parse out overall. Unfortunately, we did have to purge any records that were missing information, which gave us approximately 38,000 complete records to work with.
 
-We used MongoDB for our database, but it could have worked just as well with SQL. As for Javascript libraries, we chose to use dc.js (Dimensional Charts Library)
- for the purposes of charting. We designed this largely as an app for developers of all types to get insights on the market with regards to salaries, job satisfaction,
- and languages that they should focus on. With the app, we're able to select information based on country and other criteria to see how those factors interact.
+A possible danger with this dataset is that is that the salary information may be skewed by people giving false answers to it. Salary is one of the fields that allowed for user entry rather than a selection from presented options, meaning that it has the most opportunity for people to just input whatever they felt like rather than the answer that truly reflects them. The outliers in the salary data are potentially that, and may have to be discarded to make the data more representative.
 
-We settled on a dashboard-style page with multiple charts, allowing for users to select various pieces of information to get specific visualizations. 
-We chose to use a pie chart to break down developer types among the respondents. A bar chart seemed like the most intuitive way to display both the top 10 languages used 
-and the salary information. Our final feature is a box plot to display job satisfaction.
+We utilized MongoDB for our database. As for Javascript libraries, we chose to use dc.js (Dimensional Charts Library) for the purposes of charting our data. We opted for this library because it provided great data visualizations, allowed for graphical filtering, generated charts and dashboards quickly, and allowed for interactive dashboards. Unfortunately, it also proved to be buggy, which required a lot of workarounds, and it didn't have straightforward solutions. Being able to apply labels, for instance, or resizing the charts, was definitely an adventure in thinking outside the box.
 
-With these charts, we're able to drill down into very specific situations. For instance, we can look at the United States and, from there, choose Data Scientist or 
-Machine Learning Specialist. We can quickly see that the top three programming languages used for that field are: Python, SQL, and R. Salaries are predominantly high,
- at $90k and above, and job satisfaction is good, overall.
+We designed this largely as an app for developers of all types to get insights on the market with regards to salaries, job satisfaction, and languages that they should focus on. With the app, we're able to select information based on country and other criteria to see how those factors interact.
 
-There are limitations, of course. Not all respondents included all of the information - so, the data are skewed towards those who actually answered 
-questions regarding programming languages, salary, or job satisfaction. The charts function only on the data that are available: e.g. of the 1924 respondents
- that were Data Scientists in the United States, only 82 responded with salary information, so only those 82 records are displayed in the salary chart. <- fix this to be more accurate, it's due to how the sorting works
+We chose to display our information with a dashboard featuring multiple charts, allowing users to change the visualizations by selecting any section of the data to focus on. A pie chart was used to break down proportion of each developer type among the respondants. A bar chart was chosen to represent both the sections for the top 10 most used languages and the salary information, and the final feature of our dashboard is a box plot displaying job satisfaction against compensation. A drop-down menu on the page
+can be used to focus on results from a specific country at any time. 
 
+With these charts, we're able to drill down into very specific situations - such as the job satisfaction of highly paid full-stack developers.
 
-Unfortunately, with those limitations, we're not able to make reasonable comparisons between Data Scientists in other countries. 
+The results we found by observing the data in our dashboard are interesting in a lot of respects. Javascript is far and away the most popular language overall, and is hugely represented in the three largest groups, full-stack, back-end, and front-end developers which make up almost 50% of all responders to the survey and all have it as their most commonly known language. In comparison, data scientists make up a much smaller portion of the survey size, 2.3k of 30k+ after being combined with machine learning 
+specialists as a category, but javascript is only the fourth most practiced language for them, being below python, SQL, and R in that order. 
 
-The task division was challenging, considering the workflow. All of us were very involved with determining the project and its scope,
- which was more challenging than it initially seemed. We had to pare it down from a large number of potential charts into something that would be more immediately useful,
- which did help to make it a lot more manageable - but not as flexible as we originally wanted. The project did provide a good foundation for further experiments in charting, 
-however, and it could easily be expanded to allow for additional exploration into the given dataset.
+Additionally, data scientists while being a more niche field appear to be more highly compensated on average with our largest salary category 140k+ being their most populous salary grouping worldwide. They also have a high occurance of "very satisfied" responses for job satisfaction. In comparison, even limiting the results to united states the populous groups of full-stack and front-end developers most commonly earn in the 60k+ and 90k+ range. For a large earner in the united states back-end development seems a wise choice with how large of a field it is and their most populous groups being the most profitable ones, though this is not the case when reported worldwide where "very low" is their most populous group instead.
 
-We also did a lot of collective research into various Javascript libraries and other resources to make this project come to fruition. Aydin was the primary code-force, 
-with Seung handling the Heroku deployment and assisting with bug-fixing, and Robert and Jennifer working on the presentation as well as assisting with code and troubleshooting.
+The task division was challenging, considering the workflow. All of us were very involved with determining the project and its scope, which was more challenging than it initially seemed. We had to pare it down from a large number of potential charts into something that would be more immediately useful, which did help to make it a lot more manageable - but not as flexible as we originally wanted. The project did provide a good foundation for further experiments in charting, however, and it could easily be expanded to allow for additional exploration into the given dataset and to see further relationships within the data.
+
+We also did a lot of collective research into various Javascript libraries and other resources to make this project come to fruition. Aydin was the primary code-force, with Jennifer and Robert working on the presentation as well as assisting with code and troubleshooting, and Seung assisting with bug-fixing and some code.
