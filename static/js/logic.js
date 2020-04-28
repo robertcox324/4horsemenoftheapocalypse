@@ -2,16 +2,11 @@ queue()
     .defer(d3.json, '/stack_overflow/developers_cleaned')
     .await(makeGraphs);
 
-const urlParams = new URLSearchParams(window.location.search),
-useCanvas = !!urlParams.get('canvas');
-
-d3.select('#canvas').property('checked', useCanvas).on('change', function() {
-    window.location.href = window.location.href.split('?')[0] + (this.checked ? '?canvas=t' : '');
-})
 
 function makeGraphs(error, projectsJson) {
 	var stack_overflow_repo = projectsJson;
 	var ndx = crossfilter(stack_overflow_repo);
+	var all = ndx.groupAll();
 // These functions work with array elements only. The aim is to find the number of the occurrence of each element in array
     function lan_reduceAdd(p, v) {
         v.LanguageWorkedWith.split(";").forEach (function(val, idx) {
@@ -122,7 +117,6 @@ function makeGraphs(error, projectsJson) {
                 return [];
             }
     );
-
 // Adding countries to dropdown filter menu
     var select = new dc.selectMenu("#select1")
         .dimension(country_dim)
@@ -178,7 +172,6 @@ var heightOfContainer = 500,
         .height(600)
 		.dimension(language_dim)
 		.group(GroupByLanguage)
-//        .group(GroupByLanguage)
         .ordering(function(d){ return -d.value })
         .rowsCap(number_of_bins)
         .elasticX(true)
@@ -229,7 +222,17 @@ var heightOfContainer = 500,
 //        addYLabel(chart, "Range of Salaries");
 //  });
 
-
+    dc.dataCount('.dc-data-count')
+        .dimension(ndx)
+        .group(all)
+        // (optional) html, for setting different html for some records and all records.
+        // .html replaces everything in the anchor with the html given using the following function.
+        // %filter-count and %total-count are replaced with the values obtained.
+        .html({
+            some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
+                ' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
+            all:'All records selected. Please click on the graph to apply filters.'
+        });
     dc.renderAll();
 
 
