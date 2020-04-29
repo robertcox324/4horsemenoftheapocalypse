@@ -11,4 +11,4 @@ NOTE
 
 To use this this code, you'll need to download the data from here: https://insights.stackoverflow.com/survey
 
-Move the .csv into the data folder, run the Jupyter Notebook, and you'll be good to go! :)
+Move the .csv into the data/developer_survey_2019 folder, run the Jupyter Notebook, and you'll be good to go! :)
