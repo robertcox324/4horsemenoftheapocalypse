@@ -2,85 +2,62 @@ queue()
     .defer(d3.json, '/stack_overflow/developers_cleaned')
     .await(makeGraphs);
 
+var countChart = dc.dataCount("#mystats");
 
 function makeGraphs(error, projectsJson) {
 	var stack_overflow_repo = projectsJson;
 	var ndx = crossfilter(stack_overflow_repo);
 	var all = ndx.groupAll();
-// These functions work with array elements only. The aim is to find the number of the occurrence of each element in array
-    function lan_reduceAdd(p, v) {
-        v.LanguageWorkedWith.split(";").forEach (function(val, idx) {
-        p[val] = (p[val] || 0) + 1; //increment counts
-      });
-      return p;
-    }
 
-    function lan_reduceRemove(p, v) {
-        v.LanguageWorkedWith.split(";").forEach (function(val, idx) {
-        p[val] = (p[val] || 0) - 1; //decrement counts
-      });
-//      console.log(p);
-      return p;
-    }
 
-    function dev_reduceAdd(p, v) {
-//        console.log(v.DevType.split(";"));
-        v.DevType.split(";").forEach (function(val, idx) {
-        p[val] = (p[val] || 0) + 1; //increment counts
-      });
-//      console.log(p);
-      return p;
-    }
 
-    function dev_reduceRemove(p, v) {
-        v.DevType.split(";").forEach (function(val, idx) {
-        p[val] = (p[val] || 0) - 1; //decrement counts
-      });
-      return p;
-    }
-
-    function reduceInitial() {
-        return {};
-    }
+// These functions work with array elements only. The aim is to find the number of the occurrence of each element in array. Below is the old code that is needed with earlier versions of crossfilter.
+//    function lan_reduceAdd(p, v) {
+//        v.LanguageWorkedWith.split(";").forEach (function(val, idx) {
+//        p[val] = (p[val] || 0) + 1; //increment counts
+//      });
+//      return p;
+//    }
+//
+//    function lan_reduceRemove(p, v) {
+//        v.LanguageWorkedWith.split(";").forEach (function(val, idx) {
+//        p[val] = (p[val] || 0) - 1; //decrement counts
+//      });
+////      console.log(p);
+//      return p;
+//    }
+//
+//    function dev_reduceAdd(p, v) {
+////        console.log(v.DevType.split(";"));
+//        v.DevType.split(";").forEach (function(val, idx) {
+//        p[val] = (p[val] || 0) + 1; //increment counts
+//      });
+////      console.log(p);
+//      return p;
+//    }
+//
+//    function dev_reduceRemove(p, v) {
+//        v.DevType.split(";").forEach (function(val, idx) {
+//        p[val] = (p[val] || 0) - 1; //decrement counts
+//      });
+//      return p;
+//    }
+//
+//    function reduceInitial() {
+//        return {};
+//    }
 
 
 //    Some of the data are in string format where elements separated from each other with ";". We have to split them at each occurence of ";" and feed them to rediuce_add and reduceRemove functions
-    var dev_dim = ndx.dimension(function(d) {return d.DevType.split(";");});
-    var GroupByDev = dev_dim.groupAll().reduce(dev_reduceAdd, dev_reduceRemove, reduceInitial).value();
-//     hack to make dc.js charts work. Interestingly enough the code above should be all that we needed to Group elements but it won't work without below code
-    GroupByDev.all = function() {
-        var newObject = [];
-        for (var key in this) {
-            if (this.hasOwnProperty(key) && key != "all") {
-                newObject.push({
-                key: key,
-                value: this[key]
-                });
-            }
-        }
-      return newObject;
-    }
+    var dev_dim = ndx.dimension(function(d) {return d.DevType}, true);
+    var GroupByDev = dev_dim.group()
 
-     var language_dim = ndx.dimension(function(d){ return d.LanguageWorkedWith.split(";");});
-    var GroupByLanguage = language_dim.groupAll().reduce(lan_reduceAdd, lan_reduceRemove, reduceInitial).value();
-//     hack to make dc.js charts work. Interestingly enough the code above should be all that we needed to Group elements but it won't work without below code.
-    GroupByLanguage.all = function() {
-        var newObject = [];
-        for (var key in this) {
-            if (this.hasOwnProperty(key) && key != "all") {
-                newObject.push({
-                key: key,
-                value: this[key]
-                });
-            }
-        }
-//        console.log(newObject);
-      return newObject;
-    }
+     var language_dim = ndx.dimension(function(d){ return d.LanguageWorkedWith}, true);
+     var GroupByLanguage = language_dim.group();
 
 // Creating crossfilter dimensions for  columns of interest in our DataFrame
-    var country_dim = ndx.dimension(function(d) { return d.Country;}, true);
-    var jobSat_dim = ndx.dimension(function(d) { return d.JobSat;}, true);
+    var country_dim = ndx.dimension(function(d) { return d.Country;});
+    var jobSat_dim = ndx.dimension(function(d) { return d.JobSat;});
 
 
 // Creating compensation ranges
@@ -90,7 +67,7 @@ function makeGraphs(error, projectsJson) {
         else if (d.ConvertedComp > 60000) return "60K +";
         else if (d.ConvertedComp > 40000) return "40K +";
         else if (d.ConvertedComp > 20000) return "20K +";
-        else return "Very Low";}, true);
+        else return "Very Low";});
 
 
 //    Grouping values
@@ -131,7 +108,9 @@ function makeGraphs(error, projectsJson) {
 	var salaryChart = new dc.rowChart("#row-chart2");
 	var boxplotChart = new dc.boxPlot("#boxplot-chart");
 
-
+console.log(all);
+console.log(GroupByDev);
+console.log(GroupByLanguage);
 //Charts
 var heightOfContainer = 500,
     legendHeight = 100,
@@ -222,17 +201,9 @@ var heightOfContainer = 500,
 //        addYLabel(chart, "Range of Salaries");
 //  });
 
-    dc.dataCount('.dc-data-count')
-        .dimension(ndx)
-        .group(all)
-        // (optional) html, for setting different html for some records and all records.
-        // .html replaces everything in the anchor with the html given using the following function.
-        // %filter-count and %total-count are replaced with the values obtained.
-        .html({
-            some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
-                ' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
-            all:'All records selected. Please click on the graph to apply filters.'
-        });
+    countChart
+	    .dimension(ndx)
+        .group(all);
     dc.renderAll();
 
 
