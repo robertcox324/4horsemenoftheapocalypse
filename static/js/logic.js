@@ -2,11 +2,14 @@ queue()
     .defer(d3.json, '/stack_overflow/developers_cleaned')
     .await(makeGraphs);
 
+var countChart = dc.dataCount("#mystats");
 
 function makeGraphs(error, projectsJson) {
 	var stack_overflow_repo = projectsJson;
 	var ndx = crossfilter(stack_overflow_repo);
 	var all = ndx.groupAll();
+
+
 
 // These functions work with array elements only. The aim is to find the number of the occurrence of each element in array. Below is the old code that is needed with earlier versions of crossfilter.
 //    function lan_reduceAdd(p, v) {
@@ -198,7 +201,9 @@ var heightOfContainer = 500,
 //        addYLabel(chart, "Range of Salaries");
 //  });
 
-
+    countChart
+	    .dimension(ndx)
+        .group(all);
     dc.renderAll();
 
 
