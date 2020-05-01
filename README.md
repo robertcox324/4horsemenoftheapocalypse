@@ -5,4 +5,10 @@ Seung min Yoo,
 Aydin Jaliov,
 Robert R Cox Jr
 
-Our project aims to visualize the impact the COVID-19 pandemic has had on the aviation industry by plotting the rapidly declining volume of air traffic over the past few months. We will be creating a chart showing the air traffic at various airports over time, with a slider showing the progression over days. Likely this will be a bubble chart showing the bubbles for each airport shrinking/growing over time. We will also include the coronavirus infection rates to compare against these somewhere on the page.
+Our project aims to visualize the popularity of many programming language with various types of programmers utilizing the stack overflow developer survey for 2019. We will create a bar chart showing the number of programmers utilizing each language polled divided into various categories such as if a programmer is a hobbyist or not, years spent programming, country of origin, education level, etc. with different visualizations for each. Important analyses we can do are looking at which programming languages are most commonly used by the highest paid programmers, and to see which languages are most important to know to be competitive in the market. 
+
+NOTE
+
+To use this this code, you'll need to download the data from here: https://insights.stackoverflow.com/survey
+
+Move the .csv into the data/developer_survey_2019 folder, run the Jupyter Notebook, and you'll be good to go! :)
